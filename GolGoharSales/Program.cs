@@ -1,4 +1,13 @@
+using Microsoft.EntityFrameworkCore;
+using GolGoharSales.Data;
+using GolGoharSales.Data.AppContext;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Add Database Context
+
+builder.Services.AddDbContext<SalesAppContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add services to the container.
 
