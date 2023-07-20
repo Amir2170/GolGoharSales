@@ -11,6 +11,21 @@ public class SalesAppContext: DbContext
     {
     }
     
-    //Warehouse model context
+    //Warehouse model context Dbset
     public DbSet<Warehouse> Warehouses { get; set; }
+    
+    //Contract model context Dbset
+    public DbSet<Contract> Contracts { get; set; }
+    
+    //Customer model context Dbset
+    public DbSet<Customer> Customers { get; set; }
+    
+    //Location model context Dbset
+    public DbSet<Location> Locations { get; set; }
+    
+    //Production model context Dbset
+    public DbSet<Production> Productions { get; set; }
+    
+    //Transportation model context Dbset
+    public DbSet<Transportation> Transportations { get; set; }
 }
