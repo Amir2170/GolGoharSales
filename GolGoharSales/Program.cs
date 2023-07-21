@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using GolGoharSales.Data;
 using GolGoharSales.Data.AppContext;
@@ -12,6 +13,7 @@ builder.Services.AddDbContext<SalesAppContext>(options =>
 // Add services to the container.
 
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

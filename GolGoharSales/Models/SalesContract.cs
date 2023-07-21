@@ -5,7 +5,7 @@ namespace GolGoharSales.Models;
 // Contract model with one to many relation to Production being as child
 // one to many relation to Customer being as child
 // one to many relation to Transportation being as parent
-public class Contract
+public class SalesContract
 {
     public int Id { get; set; }
     

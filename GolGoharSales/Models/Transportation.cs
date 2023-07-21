@@ -14,5 +14,5 @@ public class Transportation
     
     public int ContractId { get; set; } // foreing key to Contract
 
-    public Contract Contract { get; set; } = null!; // navigation to Contract
+    public SalesContract SalesContract { get; set; } = null!; // navigation to Contract
 }

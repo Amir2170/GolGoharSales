@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace GolGoharSales.Data.GenericRepository;
+namespace GolGoharSales.Data.GenericRepositoryNS;
 
 // GenericRepository Interface 
 public interface IGenericRepository<TEntity> where TEntity : class

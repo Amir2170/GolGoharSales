@@ -15,7 +15,7 @@ public class SalesAppContext: DbContext
     public DbSet<Warehouse> Warehouses { get; set; }
     
     //Contract model context Dbset
-    public DbSet<Contract> Contracts { get; set; }
+    public DbSet<SalesContract> SalesContracts { get; set; }
     
     //Customer model context Dbset
     public DbSet<Customer> Customers { get; set; }

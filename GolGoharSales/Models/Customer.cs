@@ -15,5 +15,6 @@ public class Customer
     public string Telephone { get; set; }
 
     // collection navigation containing contracts
-    public ICollection<Contract> Contracts { get; }= new List<Contract>();
+    public ICollection<SalesContract> Contracts { get; }= new List<SalesContract>();
 }
+

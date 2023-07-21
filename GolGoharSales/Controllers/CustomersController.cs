@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Data;
+using System.Net;
 using GolGoharSales.Models;
 using GolGoharSales.Data;
 using GolGoharSales.Data.AppContext;
 using GolGoharSales.Data.UnitOfWork;
 using Microsoft.AspNetCore.Mvc;
+using Contract = System.Diagnostics.Contracts.Contract;
 
 namespace GolGoharSales.Controllers;
 
@@ -77,9 +80,90 @@ public class CustomersController : ControllerBase
         {
             unitOfWork.Save();
         }
-        catch (Exception ex)
+        //handling DBConcurrencyException
+        catch (DBConcurrencyException ex)
         {
-            throw ex;
+            const string msg = "multiple PUT requests at the same time";
+            return StatusCode((int)HttpStatusCode.InternalServerError, msg);
+        }
+        // handling other error types
+        catch (Exception exception)
+        {
+            // in production throw errors for debug purposes
+            Console.WriteLine(exception);
+            throw;
+            //const string msg = "Unable to update item due to database exceptions";
+            //return StatusCode((int)HttpStatusCode.InternalServerError, msg);
+        }
+
+        return NoContent();
+    }
+    
+    //POST: customers
+    // Creating a customer 
+    [HttpPost]
+    public ActionResult<Customer> CreateCustomer(Customer newCustomer)
+    {   
+        // do not add duplicate customers
+        if (unitOfWork.CustomerRepository.CustomerExists(newCustomer))
+        {
+            return BadRequest(new { message = "customer already exists" });
+        }
+        
+        //create a new customer
+        var customer = new Customer
+        {
+            Title = newCustomer.Title,
+            Address = newCustomer.Address,
+            Telephone = newCustomer.Telephone
+        };
+        
+        // start tracking
+        unitOfWork.CustomerRepository.Add(customer);
+        
+        // handle savechanges() exceptions
+        try
+        {
+            unitOfWork.Save();
+        }
+        catch (Exception exception)
+        {
+            // throw exception in production for debug purposes
+            Console.WriteLine(exception);
+            throw;
+        }
+        
+        // return GetItemById with newly created customer
+        return CreatedAtAction(nameof(GetCustomerById), new { id = customer.Id }, customer);
+    }
+    
+    // DELETE: customers/{id} 
+    //deletes customer with the given id if successful return noContent result
+    [HttpDelete("{id}")]
+    public IActionResult DeleteCustomerById(int id)
+    {
+        // get customer with the the given id
+        var customer = unitOfWork.CustomerRepository.GetById(id);
+        
+        // check if customer exists if not return a notFound response
+        if (customer == null)
+        {
+            return NotFound(new { message = "customer not found" });
+        }
+        
+        // start tracking 
+        unitOfWork.CustomerRepository.Remove(customer);
+        
+        // savechanges exception handling
+        try
+        {
+            unitOfWork.Save();
+        }
+        catch (Exception exception)
+        {
+            // throw the exception for debug purposes
+            Console.WriteLine(exception);
+            throw;
         }
 
         return NoContent();

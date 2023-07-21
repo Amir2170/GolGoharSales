@@ -1,5 +1,6 @@
 ﻿using GolGoharSales.Data.AppContext;
-using GolGoharSales.Data.GenericRepository;
+using GolGoharSales.Data.GenericRepositoryNS;
+using GolGoharSales.Data.CustomerRepositoryNS;
 using GolGoharSales.Models;
 
 namespace GolGoharSales.Data.UnitOfWork;
@@ -9,22 +10,22 @@ public class UnitOfWork : IDisposable
     private readonly SalesAppContext _context;
     
     // Contract repository
-    private GenericRepository<Contract>? contractRepository;
+    private GenericRepository<SalesContract>? _salesContractRepository;
     
     // Customer repository
-    private GenericRepository<Customer>? customerRepository;
+    private CustomerRepository? _customerRepository;
     
     // Location repository
-    private GenericRepository<Location>? locationRepository;
+    private GenericRepository<Location>? _locationRepository;
     
     // Production repository
-    private GenericRepository<Production>? productionRepository;
+    private GenericRepository<Production>? _productionRepository;
     
     // Transportation repository
-    private GenericRepository<Transportation>? transportatonRepository;
+    private GenericRepository<Transportation>? _transportationRepository;
     
     // Warehouse repository
-    private GenericRepository<Warehouse>? warehouseRepository;
+    private GenericRepository<Warehouse>? _warehouseRepository;
     
     // Constructor
     public UnitOfWork(SalesAppContext context)
@@ -33,30 +34,30 @@ public class UnitOfWork : IDisposable
     }
     
     // initializing and returning ContractRepository
-    public GenericRepository<Contract> ContractRepository
+    public GenericRepository<SalesContract> ContractRepository
     {
         get
         {
-            if (contractRepository == null)
+            if (_salesContractRepository == null)
             {
-                contractRepository = new GenericRepository<Contract>(_context);
+                _salesContractRepository = new GenericRepository<SalesContract>(_context);
             }
 
-            return contractRepository;
+            return _salesContractRepository;
         }
     }
     
     // Initializing and returning CustomerRepository
-    public GenericRepository<Customer> CustomerRepository
+    public CustomerRepository CustomerRepository
     {
         get
         {
-            if (customerRepository == null)
+            if (_customerRepository == null)
             {
-                customerRepository = new GenericRepository<Customer>(_context);
+                _customerRepository = new CustomerRepository(_context);
             }
 
-            return customerRepository;
+            return _customerRepository;
         }
     }
     
@@ -65,12 +66,12 @@ public class UnitOfWork : IDisposable
     {
         get
         {
-            if (locationRepository == null)
+            if (_locationRepository == null)
             {
-                locationRepository = new GenericRepository<Location>(_context);
+                _locationRepository = new GenericRepository<Location>(_context);
             }
 
-            return locationRepository;
+            return _locationRepository;
         }
     }
     
@@ -79,12 +80,12 @@ public class UnitOfWork : IDisposable
     {
         get
         {
-            if (productionRepository == null)
+            if (_productionRepository == null)
             {
-                productionRepository = new GenericRepository<Production>(_context);
+                _productionRepository = new GenericRepository<Production>(_context);
             }
 
-            return productionRepository;
+            return _productionRepository;
         }
     }
     
@@ -93,12 +94,12 @@ public class UnitOfWork : IDisposable
     {
         get
         {
-            if (transportatonRepository == null)
+            if (_transportationRepository == null)
             {
-                transportatonRepository = new GenericRepository<Transportation>(_context);
+                _transportationRepository = new GenericRepository<Transportation>(_context);
             }
 
-            return transportatonRepository;
+            return _transportationRepository;
         }
     }
     
@@ -107,12 +108,12 @@ public class UnitOfWork : IDisposable
     {
         get
         {
-            if (warehouseRepository == null)
+            if (_warehouseRepository == null)
             {
-                warehouseRepository = new GenericRepository<Warehouse>(_context);
+                _warehouseRepository = new GenericRepository<Warehouse>(_context);
             }
 
-            return warehouseRepository;
+            return _warehouseRepository;
         }
     }
     
