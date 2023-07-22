@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Net;
 using GolGoharSales.Models;
@@ -14,12 +15,12 @@ namespace GolGoharSales.Controllers;
 [Route("[controller]")]
 public class CustomersController : ControllerBase
 {
-    private UnitOfWork unitOfWork;
+    private readonly UnitOfWork _unitOfWork;
     
     //Initializing unitOfWork using injected context
     public CustomersController(SalesAppContext context)
     {
-        unitOfWork = new UnitOfWork(context);
+        _unitOfWork = new UnitOfWork(context);
     }
     
     //GET: customers/
@@ -27,7 +28,7 @@ public class CustomersController : ControllerBase
     [HttpGet]
     public IEnumerable<Customer> GetAllCustomers()
     {
-        return unitOfWork.CustomerRepository.GetAll();
+        return _unitOfWork.CustomerRepository.GetAll();
     }
     
     //GET: customers/{id}
@@ -35,7 +36,7 @@ public class CustomersController : ControllerBase
     [HttpGet("{id}")]
     public ActionResult<Customer> GetCustomerById(int id)
     {
-        var customer = unitOfWork.CustomerRepository.GetById(id);
+        var customer = _unitOfWork.CustomerRepository.GetById(id);
 
         if (customer == null)
         {
@@ -55,11 +56,11 @@ public class CustomersController : ControllerBase
         // checking if id is equal to customerUpdate id
         if (id != customerUpdate.Id)
         {
-            return BadRequest(new { message = "Id in url in not equal to id in request body" });
+            return BadRequest(new { message = "Id in url is not equal to id in request body" });
         }
         
         // get customer by id parameter
-        var customer = unitOfWork.CustomerRepository.GetById(id);
+        var customer = _unitOfWork.CustomerRepository.GetById(id);
         
         // check if customer exists
         if (customer == null)
@@ -73,12 +74,12 @@ public class CustomersController : ControllerBase
         customer.Telephone = customerUpdate.Telephone;
         
         //track changes
-        unitOfWork.CustomerRepository.Update(customer);
+        _unitOfWork.CustomerRepository.Update(customer);
         
         // savechanges exeption handling
         try
         {
-            unitOfWork.Save();
+            _unitOfWork.Save();
         }
         //handling DBConcurrencyException
         catch (DBConcurrencyException ex)
@@ -105,7 +106,7 @@ public class CustomersController : ControllerBase
     public ActionResult<Customer> CreateCustomer(Customer newCustomer)
     {   
         // do not add duplicate customers
-        if (unitOfWork.CustomerRepository.CustomerExists(newCustomer))
+        if (_unitOfWork.CustomerRepository.CustomerExists(newCustomer))
         {
             return BadRequest(new { message = "customer already exists" });
         }
@@ -119,12 +120,12 @@ public class CustomersController : ControllerBase
         };
         
         // start tracking
-        unitOfWork.CustomerRepository.Add(customer);
+        _unitOfWork.CustomerRepository.Add(customer);
         
         // handle savechanges() exceptions
         try
         {
-            unitOfWork.Save();
+            _unitOfWork.Save();
         }
         catch (Exception exception)
         {
@@ -143,7 +144,7 @@ public class CustomersController : ControllerBase
     public IActionResult DeleteCustomerById(int id)
     {
         // get customer with the the given id
-        var customer = unitOfWork.CustomerRepository.GetById(id);
+        var customer = _unitOfWork.CustomerRepository.GetById(id);
         
         // check if customer exists if not return a notFound response
         if (customer == null)
@@ -152,12 +153,12 @@ public class CustomersController : ControllerBase
         }
         
         // start tracking 
-        unitOfWork.CustomerRepository.Remove(customer);
+        _unitOfWork.CustomerRepository.Remove(customer);
         
         // savechanges exception handling
         try
         {
-            unitOfWork.Save();
+            _unitOfWork.Save();
         }
         catch (Exception exception)
         {

@@ -1,5 +1,8 @@
-﻿using GolGoharSales.Data.AppContext;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using GolGoharSales.Data.AppContext;
+
 
 namespace GolGoharSales.Data.GenericRepositoryNS;
 

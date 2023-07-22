@@ -1,6 +1,8 @@
-﻿using GolGoharSales.Data.AppContext;
+﻿using System;
+using GolGoharSales.Data.AppContext;
 using GolGoharSales.Data.GenericRepositoryNS;
 using GolGoharSales.Data.CustomerRepositoryNS;
+using GolGoharSales.Data.LocationRepositoryNS;
 using GolGoharSales.Models;
 
 namespace GolGoharSales.Data.UnitOfWork;
@@ -16,7 +18,7 @@ public class UnitOfWork : IDisposable
     private CustomerRepository? _customerRepository;
     
     // Location repository
-    private GenericRepository<Location>? _locationRepository;
+    private LocationRepository? _locationRepository;
     
     // Production repository
     private GenericRepository<Production>? _productionRepository;
@@ -62,13 +64,13 @@ public class UnitOfWork : IDisposable
     }
     
     // Initializing and returning LocationRepository
-    public GenericRepository<Location> LocationRepository
+    public LocationRepository LocationRepository
     {
         get
         {
             if (_locationRepository == null)
             {
-                _locationRepository = new GenericRepository<Location>(_context);
+                _locationRepository = new LocationRepository(_context);
             }
 
             return _locationRepository;
