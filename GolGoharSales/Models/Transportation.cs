@@ -13,7 +13,7 @@ public class Transportation
 
     public int SetTonnage { get; set; }
     
-    public int ContractId { get; set; } // foreing key to Contract
+    public int SalesContractId { get; set; } // foreing key to Contract
 
-    public SalesContract SalesContract { get; set; } = null!; // navigation to Contract
+    public SalesContract SalesContracts { get; set; } = null!; // navigation to Contract
 }

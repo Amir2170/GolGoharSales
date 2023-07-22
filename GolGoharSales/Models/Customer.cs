@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 namespace GolGoharSales.Models;
 
@@ -15,6 +16,6 @@ public class Customer
     public string Telephone { get; set; }
 
     // collection navigation containing contracts
-    public ICollection<SalesContract> Contracts { get; }= new List<SalesContract>();
+    public ICollection<SalesContract> SalesContracts { get; }= new List<SalesContract>();
 }
 

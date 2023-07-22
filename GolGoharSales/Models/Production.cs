@@ -20,5 +20,5 @@ public class Production
     public Warehouse Warehouse { get; set; } = null!; // required navigation to warehouse 
 
     // collection navigation containing contracts
-    public ICollection<SalesContract> Contracts { get; } = new List<SalesContract>();
+    public ICollection<SalesContract> SalesContracts { get; } = new List<SalesContract>();
 }

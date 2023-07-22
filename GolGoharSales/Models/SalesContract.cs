@@ -14,13 +14,13 @@ public class SalesContract
     public int ContractNumber { get; set; }
     
     [DataType(DataType.DateTime)]
-    public DateTime ContractDate;
+    public DateTime ContractDate { get; set; }
 
     [DataType(DataType.DateTime)]
-    public DateTime FinishDate;
+    public DateTime FinishDate { get; set; }
 
     [DataType(DataType.DateTime)]
-    public DateTime StartDate;
+    public DateTime StartDate { get; set; }
 
     public int Monthly { get; set; }
 
