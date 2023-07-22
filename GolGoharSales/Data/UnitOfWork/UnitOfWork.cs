@@ -4,6 +4,7 @@ using GolGoharSales.Data.GenericRepositoryNS;
 using GolGoharSales.Data.CustomerRepositoryNS;
 using GolGoharSales.Data.LocationRepositoryNS;
 using GolGoharSales.Data.ProductionRepositoryNS;
+using GolGoharSales.Data.SalesContractRepositoryNS;
 using GolGoharSales.Models;
 
 namespace GolGoharSales.Data.UnitOfWork;
@@ -13,7 +14,7 @@ public class UnitOfWork : IDisposable
     private readonly SalesAppContext _context;
     
     // Contract repository
-    private GenericRepository<SalesContract>? _salesContractRepository;
+    private SalesContractRepository? _salesContractRepository;
     
     // Customer repository
     private CustomerRepository? _customerRepository;
@@ -37,13 +38,13 @@ public class UnitOfWork : IDisposable
     }
     
     // initializing and returning ContractRepository
-    public GenericRepository<SalesContract> ContractRepository
+    public SalesContractRepository SalesContractRepository
     {
         get
         {
             if (_salesContractRepository == null)
             {
-                _salesContractRepository = new GenericRepository<SalesContract>(_context);
+                _salesContractRepository = new SalesContractRepository(_context);
             }
 
             return _salesContractRepository;

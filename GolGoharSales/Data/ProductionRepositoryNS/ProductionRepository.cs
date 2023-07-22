@@ -12,7 +12,7 @@ public class ProductionRepository : GenericRepository<Production> , IPoroduction
     {
     }
     
-    /* check if customer with given title , strategicCode , code , warehouseId exists
+    /* check if production with given title , strategicCode , code , warehouseId exists
       ids are always different in database */
     public bool ProductionExists(Production production)
     {
