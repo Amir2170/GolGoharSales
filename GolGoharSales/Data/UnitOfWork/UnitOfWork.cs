@@ -6,6 +6,7 @@ using GolGoharSales.Data.LocationRepositoryNS;
 using GolGoharSales.Data.ProductionRepositoryNS;
 using GolGoharSales.Data.SalesContractRepositoryNS;
 using GolGoharSales.Data.TransportationRepositoryNS;
+using GolGoharSales.Data.WarehouseRepositoryNS;
 using GolGoharSales.Models;
 
 namespace GolGoharSales.Data.UnitOfWork;
@@ -30,7 +31,7 @@ public class UnitOfWork : IDisposable
     private TransportationRepository? _transportationRepository;
     
     // Warehouse repository
-    private GenericRepository<Warehouse>? _warehouseRepository;
+    private WarehouseRepository? _warehouseRepository;
     
     // Constructor
     public UnitOfWork(SalesAppContext context)
@@ -109,13 +110,13 @@ public class UnitOfWork : IDisposable
     }
     
     // Initializing and returning WarehouseRepository
-    public GenericRepository<Warehouse> WarehouseRepository
+    public WarehouseRepository WarehouseRepository
     {
         get
         {
             if (_warehouseRepository == null)
             {
-                _warehouseRepository = new GenericRepository<Warehouse>(_context);
+                _warehouseRepository = new WarehouseRepository(_context);
             }
 
             return _warehouseRepository;

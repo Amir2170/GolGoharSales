@@ -5,6 +5,5 @@ namespace GolGoharSales.Data.TransportationRepositoryNS;
 
 public interface ITransportationRepository : IGenericRepository<Transportation>
 {
-    // check if transportation already exists
-    bool TransportationExists(Transportation transportation);
+    // no need for checking transportation existence
 }

@@ -116,13 +116,7 @@ public class TransportationsController : ControllerBase
     // Creating a transportation 
     [HttpPost]
     public ActionResult<Customer> CreateTransportation(Transportation newTransportation)
-    {   
-        // do not add duplicate transportation
-        if (_unitOfWork.TransportationRepository.TransportationExists(newTransportation))
-        {
-            return BadRequest(new { message = "transportation already exists" });
-        }
-        
+    {
         // check if contract with id in request body exists
         var contract = _unitOfWork.SalesContractRepository.GetById(
             newTransportation.SalesContractId

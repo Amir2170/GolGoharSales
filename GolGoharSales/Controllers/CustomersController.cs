@@ -134,8 +134,8 @@ public class CustomersController : ControllerBase
             throw;
         }
         
-        // return GetItemById with newly created customer
-        return CreatedAtAction(nameof(GetCustomerById), new { id = customer.Id }, customer);
+        // return 204 no content if successful
+        return NoContent();
     }
     
     // DELETE: customers/{id} 

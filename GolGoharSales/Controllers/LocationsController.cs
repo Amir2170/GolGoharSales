@@ -128,8 +128,8 @@ public class LocationsController : ControllerBase
             throw;
         }
         
-        // return GetItemById with newly created customer
-        return CreatedAtAction(nameof(GetLocationById), new { id = location.Id }, location);
+        // return 204 if successful
+        return NoContent();
     }
     
     // DELETE: locations/{id} 
