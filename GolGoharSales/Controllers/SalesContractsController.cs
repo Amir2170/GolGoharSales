@@ -214,7 +214,8 @@ public class SalesContractsController : ControllerBase
             Console.WriteLine(exception);
             throw;
         }
-
+        
+        // return No content 204 if successful
         return NoContent();
     }
 }

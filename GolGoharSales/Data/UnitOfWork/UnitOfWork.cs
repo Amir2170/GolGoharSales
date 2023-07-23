@@ -5,6 +5,7 @@ using GolGoharSales.Data.CustomerRepositoryNS;
 using GolGoharSales.Data.LocationRepositoryNS;
 using GolGoharSales.Data.ProductionRepositoryNS;
 using GolGoharSales.Data.SalesContractRepositoryNS;
+using GolGoharSales.Data.TransportationRepositoryNS;
 using GolGoharSales.Models;
 
 namespace GolGoharSales.Data.UnitOfWork;
@@ -26,7 +27,7 @@ public class UnitOfWork : IDisposable
     private ProductionRepository? _productionRepository;
     
     // Transportation repository
-    private GenericRepository<Transportation>? _transportationRepository;
+    private TransportationRepository? _transportationRepository;
     
     // Warehouse repository
     private GenericRepository<Warehouse>? _warehouseRepository;
@@ -94,13 +95,13 @@ public class UnitOfWork : IDisposable
     }
     
     // Initializing and returning TransportationRepository
-    public GenericRepository<Transportation> TransportationRepository
+    public TransportationRepository TransportationRepository
     {
         get
         {
             if (_transportationRepository == null)
             {
-                _transportationRepository = new GenericRepository<Transportation>(_context);
+                _transportationRepository = new TransportationRepository(_context);
             }
 
             return _transportationRepository;
