@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "Y7tzWn4oku2DuJy67eu+0V7f6UKtTYqmS6+Kz4cSq8xNeKmAd/bBz0zyeb81EDrxOPL5gFz2rJRUtEryt8srNA==",
+  "dgSpecHash": "JA7EM4AV3Z3ipFfdMzLp5+Vx1w9bp5hELC0ZHBZO4zKgEXnT5rT7hZ26T2KGfAQSriG3xWW9luWVw0M/P2LBRQ==",
   "success": true,
   "projectFilePath": "B:\\PROJECTS\\GolGoharSales\\GolGoharSales\\GolGoharSales\\GolGoharSales.csproj",
   "expectedPackageFiles": [
@@ -8,6 +8,7 @@
     "C:\\Users\\amir\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",
     "C:\\Users\\amir\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\amir\\.nuget\\packages\\microsoft.aspnetcore.openapi\\7.0.3\\microsoft.aspnetcore.openapi.7.0.3.nupkg.sha512",
+    "C:\\Users\\amir\\.nuget\\packages\\microsoft.aspnetcore.spaproxy\\7.0.9\\microsoft.aspnetcore.spaproxy.7.0.9.nupkg.sha512",
     "C:\\Users\\amir\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\1.1.1\\microsoft.bcl.asyncinterfaces.1.1.1.nupkg.sha512",
     "C:\\Users\\amir\\.nuget\\packages\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",
     "C:\\Users\\amir\\.nuget\\packages\\microsoft.data.sqlclient\\5.0.2\\microsoft.data.sqlclient.5.0.2.nupkg.sha512",
