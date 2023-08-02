@@ -1,8 +1,0 @@
-{
-"SpaProxyServer": {
-"ServerUrl": "https://localhost:44411",
-"LaunchCommand": "npm start",
-"WorkingDirectory": "B:\\PROJECTS\\GolGoharSales\\GolGoharSales\\GolGoharSales\\ClientApp\\SalesApp\\",
-"MaxTimeoutInSeconds": "120"
-}
-}

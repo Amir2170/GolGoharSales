@@ -1,11 +1,19 @@
 {
   "Version": 1,
-  "Hash": "VpJGnoZRAVst+0u55Wd+rTDt1kZUUAjfbIZ0+DDJAZA=",
+  "Hash": "97KCBKUhNL19j0TssMfz7sNkEfNDCFKeg6vfwBfpqeA=",
   "Source": "GolGoharSales",
   "BasePath": "_content/GolGoharSales",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "GolGoharSales\\wwwroot",
+      "Source": "GolGoharSales",
+      "ContentRoot": "B:\\PROJECTS\\GolGoharSales\\GolGoharSales\\GolGoharSales\\wwwroot\\",
+      "BasePath": "_content/GolGoharSales",
+      "Pattern": "**"
+    }
+  ],
   "Assets": []
 }

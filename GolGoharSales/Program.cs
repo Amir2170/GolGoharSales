@@ -10,8 +10,19 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<SalesAppContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Add services to the container.
+// adding CORS allow origin
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(
+        policy =>
+        {
+            policy.AllowAnyOrigin()
+                .AllowAnyHeader();
+        });
+});
 
+
+// Add services to the controllers.
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -20,19 +31,19 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
-
 app.UseHttpsRedirection();
+
+// using default and static files
+
+app.UseDefaultFiles();
 
 app.UseStaticFiles();
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+// enabling CORS
+app.UseCors();
 
 app.Run();

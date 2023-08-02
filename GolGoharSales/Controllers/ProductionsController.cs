@@ -6,6 +6,7 @@ using System.Net;
 using GolGoharSales.Data.AppContext;
 using GolGoharSales.Data.UnitOfWork;
 using GolGoharSales.Models;
+using Microsoft.AspNetCore.Cors;
 
 
 namespace GolGoharSales.Controllers;
