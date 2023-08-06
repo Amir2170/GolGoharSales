@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Data;
 using System.Net;
+using AutoMapper;
 using GolGoharSales.Data.AppContext;
 using GolGoharSales.Data.UnitOfWork;
 using GolGoharSales.Models;
@@ -16,11 +17,16 @@ namespace GolGoharSales.Controllers;
 public class ProductionsController : ControllerBase
 {
     private readonly UnitOfWork _unitOfWork;
+
+    private readonly IMapper _mapper;
     
-    // Initializing unitOfWork using injected context 
-    public ProductionsController(SalesAppContext context)
+    // Initializing unitOfWork and automapper 
+    public ProductionsController(
+        SalesAppContext context, IMapper mapper
+        )
     {
         _unitOfWork = new UnitOfWork(context);
+        _mapper = mapper;
     }
     
     //GET: productions/
@@ -112,8 +118,11 @@ public class ProductionsController : ControllerBase
     //POST: productions
     // Creating a production and if production exists in a warehouse do not add that again
     [HttpPost]
-    public ActionResult<Production> CreateProduction(Production newProduction)
-    {   
+    public ActionResult<Production> CreateProduction(ProductionDTO newProductionDTO)
+    {
+        // mapping DTO to production object
+        var newProduction = _mapper.Map<ProductionDTO, Production>(newProductionDTO);
+        
         // do not add duplicate productions to a similar warehouse
         if (_unitOfWork.ProductionRepository.ProductionExists(newProduction))
         {
@@ -130,18 +139,9 @@ public class ProductionsController : ControllerBase
         {
             return NotFound(new { message = "warehouse with given id does not exists use a valid warehouse id" });
         }
-
-        //create a new production
-        var production = new Production
-        {
-            Title = newProduction.Title,
-            StrategicResource = newProduction.StrategicResource,
-            Code = newProduction.Code,
-            WarehouseId = newProduction.WarehouseId
-        };
         
         // start tracking
-        _unitOfWork.ProductionRepository.Add(production);
+        _unitOfWork.ProductionRepository.Add(newProduction);
         
         // handle savechanges() exceptions
         try

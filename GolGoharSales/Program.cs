@@ -21,6 +21,8 @@ builder.Services.AddCors(options =>
         });
 });
 
+// configure automapper service
+builder.Services.AddAutoMapper(typeof(Program));
 
 // Add services to the controllers.
 builder.Services.AddControllers();

@@ -22,3 +22,18 @@ public class Production
     // collection navigation containing contracts
     public ICollection<SalesContract> SalesContracts { get; } = new List<SalesContract>();
 }
+
+// production view model without Warehouse field to use in frontend
+public class ProductionDTO
+{
+    public int Id { get; set; }
+
+    public string Title { get; set; }
+    
+    public int StrategicResource { get; set; }
+    
+    public string Code { get; set; }
+    
+    public int WarehouseId { get; set; } // required foreign key to warehouse
+    
+}
