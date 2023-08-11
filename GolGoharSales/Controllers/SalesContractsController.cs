@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Net;
+using AutoMapper;
 using GolGoharSales.Data.AppContext;
 using GolGoharSales.Data.UnitOfWork;
 using GolGoharSales.Models;
@@ -14,11 +15,17 @@ namespace GolGoharSales.Controllers;
 public class SalesContractsController : ControllerBase
 {
     private readonly UnitOfWork _unitOfWork;
+
+    private readonly IMapper _mapper;
     
     //Initializing unitOfWork using injected context
-    public SalesContractsController(SalesAppContext context)
+    public SalesContractsController(
+        SalesAppContext context,
+        IMapper mapper
+        )
     {
         _unitOfWork = new UnitOfWork(context);
+        _mapper = mapper;
     }
     
     //GET: salesContracts/
@@ -40,8 +47,11 @@ public class SalesContractsController : ControllerBase
         {
             return NotFound(new { message = "contract with given id doesn't exists" });
         }
+        
+        // mapping model to dto to use in front end
+        var contractDTO = _mapper.Map<SalesContract, SaleContractDTO>(contract);
 
-        return contract;
+        return Ok(contractDTO);
     }
     
     //PUT: salesContracts/{id}
@@ -49,10 +59,10 @@ public class SalesContractsController : ControllerBase
         return 204 NoContent result if successful
      */
     [HttpPut("{id}")]
-    public IActionResult UpdateContract(int id, SalesContract contractUpdate)
+    public IActionResult UpdateContract(int id, SaleContractDTO contractUpdateDTO)
     {
         // checking if id is equal to contractUpdate id
-        if (id != contractUpdate.Id)
+        if (id != contractUpdateDTO.Id)
         {
             return BadRequest(new { message = "Id in url is not equal to id in request body" });
         }
@@ -67,7 +77,7 @@ public class SalesContractsController : ControllerBase
         }
         
         // check if production with the given id in contractUpdate body exists
-        var production = _unitOfWork.ProductionRepository.GetById(contractUpdate.ProductionId);
+        var production = _unitOfWork.ProductionRepository.GetById(contractUpdateDTO.ProductionId);
 
         if (production == null)
         {
@@ -77,7 +87,7 @@ public class SalesContractsController : ControllerBase
         }
         
         // check if customer with the given id in contractUpdate body exists
-        var customer = _unitOfWork.CustomerRepository.GetById(contractUpdate.CustomerId);
+        var customer = _unitOfWork.CustomerRepository.GetById(contractUpdateDTO.CustomerId);
 
         if (customer == null)
         {
@@ -86,15 +96,8 @@ public class SalesContractsController : ControllerBase
             );
         }
         
-        //update contract
-        contract.CustomerId = contractUpdate.CustomerId;
-        contract.ProductionId = contractUpdate.ProductionId;
-        contract.Value = contractUpdate.Value;
-        contract.Monthly = contractUpdate.Monthly;
-        contract.ContractNumber = contractUpdate.ContractNumber;
-        contract.StartDate = contractUpdate.StartDate;
-        contract.ContractDate = contractUpdate.ContractDate;
-        contract.FinishDate = contractUpdate.FinishDate;
+        //update contract and map dto to it
+        contract = _mapper.Map<SaleContractDTO, SalesContract>(contractUpdateDTO);
 
         //track changes
         _unitOfWork.SalesContractRepository.Update(contract);
@@ -126,8 +129,11 @@ public class SalesContractsController : ControllerBase
     //POST: salesContracts
     // Creating a contract 
     [HttpPost]
-    public ActionResult<SalesContract> CreateContract(SalesContract newContract)
+    public ActionResult<SalesContract> CreateContract(SaleContractDTO newContractDTO)
     {   
+        // mapping dto from request body to contract model
+        var newContract = _mapper.Map<SaleContractDTO, SalesContract>(newContractDTO);
+        
         // do not add duplicate contracts
         if (_unitOfWork.SalesContractRepository.ContractExists(newContract))
         {
@@ -153,22 +159,9 @@ public class SalesContractsController : ControllerBase
                 new { message = "customer with given id does not exists enter a valid production id" }
             );
         }
-        
-        //create a new contract
-        var contract = new SalesContract
-        {
-            ContractNumber = newContract.ContractNumber,
-            ContractDate = newContract.ContractDate,
-            StartDate = newContract.StartDate,
-            FinishDate = newContract.FinishDate,
-            Monthly = newContract.Monthly,
-            Value = newContract.Value,
-            ProductionId = newContract.ProductionId,
-            CustomerId = newContract.CustomerId
-        };
-        
+
         // start tracking
-        _unitOfWork.SalesContractRepository.Add(contract);
+        _unitOfWork.SalesContractRepository.Add(newContract);
         
         // handle savechanges() exceptions
         try

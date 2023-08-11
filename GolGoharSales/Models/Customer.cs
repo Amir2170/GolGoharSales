@@ -19,3 +19,15 @@ public class Customer
     public ICollection<SalesContract> SalesContracts { get; }= new List<SalesContract>();
 }
 
+// customer DTO without salesContracts navigation to use in frontend
+public class CustomerDTO
+{
+    public int Id { get; set; }
+    
+    public string Title { get; set; }
+    
+    public string Address { get; set; }
+    
+    [DataType(DataType.PhoneNumber)]
+    public string Telephone { get; set; }
+}

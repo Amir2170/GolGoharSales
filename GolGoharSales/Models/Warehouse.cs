@@ -18,3 +18,13 @@ public class Warehouse
     // collection navigation containing productions
     public ICollection<Production> Productions { get; } = new List<Production>();
 }
+
+// model view without navigation property
+public class WarehouseDTO
+{
+    public int Id { get; set; }
+    
+    public string Title { get; set; }
+    
+    public int LocationId { get; set; } //required foreign key of location model
+}

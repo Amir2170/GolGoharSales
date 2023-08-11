@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using System.Net;
+using AutoMapper;
 using GolGoharSales.Data.AppContext;
 using GolGoharSales.Data.UnitOfWork;
 using GolGoharSales.Models;
@@ -12,11 +13,17 @@ namespace GolGoharSales.Controllers;
 public class WarehousesController : ControllerBase
 {
     private readonly UnitOfWork _unitOfWork;
+
+    private readonly IMapper _mapper;
     
     // initializing unit of work through injected context
-    public WarehousesController(SalesAppContext context)
+    public WarehousesController(
+        SalesAppContext context,
+        IMapper mapper
+        )
     {
         _unitOfWork = new UnitOfWork(context);
+        _mapper = mapper;
     }
     
     //GET: warehouses/
@@ -38,8 +45,11 @@ public class WarehousesController : ControllerBase
         {
             return NotFound(new { message = "warehouse with given id doesn't exists" });
         }
+        
+        // mapping original object to DTO to use in frontend
+        var warehouseDTO = _mapper.Map<Warehouse, WarehouseDTO>(warehouse);
 
-        return warehouse;
+        return Ok(warehouseDTO);
     }
     
     //PUT: warehouses/{id}
@@ -47,10 +57,10 @@ public class WarehousesController : ControllerBase
         return 204 no content result if successful
      */
     [HttpPut("{id}")]
-    public IActionResult UpdateWarehouse(int id, Warehouse warehouseUpdate)
+    public IActionResult UpdateWarehouse(int id, WarehouseDTO warehouseUpdateDTO)
     {
         // checking if id is equal to warehouseUpdate id
-        if (id != warehouseUpdate.Id)
+        if (id != warehouseUpdateDTO.Id)
         {
             return BadRequest(new { message = "Id in url is not equal to id in request body" });
         }
@@ -66,7 +76,7 @@ public class WarehousesController : ControllerBase
         
         // check if location with id given in request body exists
         var location = _unitOfWork.LocationRepository.GetById(
-            warehouseUpdate.LocationId
+            warehouseUpdateDTO.LocationId
         );
 
         if (location == null)
@@ -76,9 +86,8 @@ public class WarehousesController : ControllerBase
             );
         }
         
-        //update warehouse
-        warehouse.Title = warehouseUpdate.Title;
-        warehouse.LocationId = warehouseUpdate.LocationId;
+        //update warehouse and map it to original model
+        warehouse = _mapper.Map<WarehouseDTO, Warehouse>(warehouseUpdateDTO);
 
         //track changes
         _unitOfWork.WarehouseRepository.Update(warehouse);
@@ -110,8 +119,11 @@ public class WarehousesController : ControllerBase
     //POST: warehouses
     // Creating a warehouse 
     [HttpPost]
-    public ActionResult<Warehouse> CreateWarehouse(Warehouse warehouseNew)
+    public ActionResult<Warehouse> CreateWarehouse(WarehouseDTO warehouseNewDTO)
     {   
+        // mapping dto to original model
+        var warehouseNew = _mapper.Map<WarehouseDTO, Warehouse>(warehouseNewDTO);
+        
         // do not add duplicate warehouse
         if (_unitOfWork.WarehouseRepository.WarehouseExists(warehouseNew))
         {
@@ -127,16 +139,9 @@ public class WarehousesController : ControllerBase
                 new { message = "location with given id does not exists use a valid location id" }
             );
         }
-        
-        //create a new warehouse
-        var warehouse = new Warehouse
-        {
-            Title = warehouseNew.Title,
-            LocationId = warehouseNew.LocationId
-        };
 
         // start tracking
-        _unitOfWork.WarehouseRepository.Add(warehouse);
+        _unitOfWork.WarehouseRepository.Add(warehouseNew);
         
         // handle savechanges() exceptions
         try

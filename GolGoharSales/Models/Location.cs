@@ -13,3 +13,11 @@ public class Location
     // Collection navigation containing warehouse models
     public ICollection<Warehouse> Warehouses { get; } = new List<Warehouse>();
 }
+
+// Location model view without warehouses collection navigation
+public class LocationDTO
+{
+    public int Id { get; set; }
+    
+    public string Title { get; set; }
+}

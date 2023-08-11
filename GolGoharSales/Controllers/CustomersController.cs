@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Net;
+using AutoMapper;
 using GolGoharSales.Models;
 using GolGoharSales.Data;
 using GolGoharSales.Data.AppContext;
 using GolGoharSales.Data.UnitOfWork;
 using Microsoft.AspNetCore.Mvc;
-using Contract = System.Diagnostics.Contracts.Contract;
+using Microsoft.AspNetCore.Http.HttpResults;
+
 
 namespace GolGoharSales.Controllers;
 
@@ -16,11 +18,17 @@ namespace GolGoharSales.Controllers;
 public class CustomersController : ControllerBase
 {
     private readonly UnitOfWork _unitOfWork;
+
+    private readonly IMapper _mapper;
     
     //Initializing unitOfWork using injected context
-    public CustomersController(SalesAppContext context)
+    public CustomersController(
+        SalesAppContext context,
+        IMapper mapper
+        )
     {
         _unitOfWork = new UnitOfWork(context);
+        _mapper = mapper;
     }
     
     //GET: customers/
@@ -43,7 +51,10 @@ public class CustomersController : ControllerBase
             return NotFound(new { message = "Customer with given id doesn't exists" });
         }
 
-        return customer;
+        // map customer to customerDTO to send to frontend
+        var customerDTO = _mapper.Map<Customer, CustomerDTO>(customer);
+
+        return Ok(customerDTO);
     }
     
     //PUT: customers/{id}
@@ -51,12 +62,12 @@ public class CustomersController : ControllerBase
         return 204 NoContent result if successful
      */
     [HttpPut("{id}")]
-    public IActionResult UpdateCustomer(int id, Customer customerUpdate)
+    public IActionResult UpdateCustomer(int id, CustomerDTO customerUpdateDTO)
     {
         // checking if id is equal to customerUpdate id
-        if (id != customerUpdate.Id)
+        if (id != customerUpdateDTO.Id)
         {
-            return BadRequest(new { message = "Id in url is not equal to id in request body" });
+            return BadRequest(new { message ="id in url is not equal to id in request body" });
         }
         
         // get customer by id parameter
@@ -68,10 +79,8 @@ public class CustomersController : ControllerBase
             return NotFound(new { message = "Customer not found" });
         }
         
-        //update customer
-        customer.Title = customerUpdate.Title;
-        customer.Address = customerUpdate.Address;
-        customer.Telephone = customerUpdate.Telephone;
+        //update customer and map dto to it
+        customer = _mapper.Map<CustomerDTO, Customer>(customerUpdateDTO);
         
         //track changes
         _unitOfWork.CustomerRepository.Update(customer);
@@ -103,24 +112,19 @@ public class CustomersController : ControllerBase
     //POST: customers
     // Creating a customer 
     [HttpPost]
-    public ActionResult<Customer> CreateCustomer(Customer newCustomer)
+    public ActionResult<Customer> CreateCustomer(CustomerDTO newCustomerDTO)
     {   
+        // mapping DTO to customer object
+        var newCustomer = _mapper.Map<CustomerDTO, Customer>(newCustomerDTO);
+        
         // do not add duplicate customers
         if (_unitOfWork.CustomerRepository.CustomerExists(newCustomer))
         {
             return BadRequest(new { message = "customer already exists" });
         }
-        
-        //create a new customer
-        var customer = new Customer
-        {
-            Title = newCustomer.Title,
-            Address = newCustomer.Address,
-            Telephone = newCustomer.Telephone
-        };
-        
+
         // start tracking
-        _unitOfWork.CustomerRepository.Add(customer);
+        _unitOfWork.CustomerRepository.Add(newCustomer);
         
         // handle savechanges() exceptions
         try

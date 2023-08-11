@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Net;
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace GolGoharSales.Controllers;
 
@@ -14,11 +16,17 @@ namespace GolGoharSales.Controllers;
 public class TransportationsController : ControllerBase
 {
     private readonly UnitOfWork _unitOfWork;
+
+    private readonly IMapper _mapper;
     
     //Initializing unitOfWork using injected context
-    public TransportationsController(SalesAppContext context)
+    public TransportationsController(
+        SalesAppContext context,
+        IMapper mapper
+        )
     {
         _unitOfWork = new UnitOfWork(context);
+        _mapper = mapper;
     }
     
     //GET: transportations/
@@ -40,8 +48,11 @@ public class TransportationsController : ControllerBase
         {
             return NotFound(new { message = "transportation with given id doesn't exists" });
         }
-
-        return transportation;
+        
+        // map model to dto to send to frontend
+        var transportationDTO = _mapper.Map<Transportation, TransportationDTO>(transportation);
+        
+        return Ok(transportationDTO);
     }
     
     //PUT: transportations/{id}
@@ -49,10 +60,11 @@ public class TransportationsController : ControllerBase
         return 204 NoContent result if successful
      */
     [HttpPut("{id}")]
-    public IActionResult UpdateTransportation(int id, Transportation transportationUpdate)
+    public IActionResult UpdateTransportation(int id, TransportationDTO transportationUpdateDTO)
     {
+        
         // checking if id is equal to transportationUpdate id
-        if (id != transportationUpdate.Id)
+        if (id != transportationUpdateDTO.Id)
         {
             return BadRequest(new { message = "Id in url is not equal to id in request body" });
         }
@@ -68,7 +80,7 @@ public class TransportationsController : ControllerBase
         
         // check if salesContractId in the given request body exists if not return a 404 notfound
         var contract = _unitOfWork.SalesContractRepository.GetById(
-            transportationUpdate.SalesContractId
+            transportationUpdateDTO.SalesContractId
             );
 
         if (contract == null)
@@ -80,11 +92,9 @@ public class TransportationsController : ControllerBase
                 });
         }
         
-        //update transportation
-        transportation.Date = transportationUpdate.Date;
-        transportation.SetTonnage = transportationUpdate.SetTonnage;
-        transportation.SalesContractId = transportationUpdate.SalesContractId;
-        
+        //update transportation and map dto to original model
+        transportation = _mapper.Map<TransportationDTO, Transportation>(transportationUpdateDTO);
+
         //track changes
         _unitOfWork.TransportationRepository.Update(transportation);
         
@@ -115,8 +125,11 @@ public class TransportationsController : ControllerBase
     //POST: transportations
     // Creating a transportation 
     [HttpPost]
-    public ActionResult<Customer> CreateTransportation(Transportation newTransportation)
+    public ActionResult<Customer> CreateTransportation(TransportationDTO newTransportationDTO)
     {
+        // mapping dto object to original model object
+        var newTransportation = _mapper.Map<TransportationDTO, Transportation>(newTransportationDTO);
+        
         // check if contract with id in request body exists
         var contract = _unitOfWork.SalesContractRepository.GetById(
             newTransportation.SalesContractId
@@ -130,15 +143,9 @@ public class TransportationsController : ControllerBase
         }
         
         //create a new transportation
-        var transportation = new Transportation
-        {
-            Date = newTransportation.Date,
-            SetTonnage = newTransportation.SetTonnage,
-            SalesContractId = newTransportation.SalesContractId
-        };
-        
+
         // start tracking
-        _unitOfWork.TransportationRepository.Add(transportation);
+        _unitOfWork.TransportationRepository.Add(newTransportation);
         
         // handle savechanges() exceptions
         try

@@ -48,8 +48,11 @@ public class ProductionsController : ControllerBase
         {
             return NotFound(new { message = "production with given id doesn't exists" });
         }
-
-        return production;
+        
+        // map production to productionDTO to send to frontend
+        var productionDTO = _mapper.Map<Production, ProductionDTO>(production);
+        
+        return Ok(productionDTO);
     }
     
     //PUT: productions/{id}
@@ -57,13 +60,13 @@ public class ProductionsController : ControllerBase
         return 204 NoContent result if successful
      */
     [HttpPut("{id}")]
-    public IActionResult UpdateProduction(int id, Production productionUpdate)
+    public IActionResult UpdateProduction(int id, ProductionDTO productionUpdateDTO)
     {
-        // checking if id is equal to production id
-        if (id != productionUpdate.Id)
+        // checking if id is equal to productionDTO id
+         if (id != productionUpdateDTO.Id)
         {
-            return BadRequest(new { message = "Id in url is not equal to id in request body" });
-        }
+            return BadRequest(new { message = "کد اختصاصی محصول با کد اختصاصی آدرس وبسایت مطابقت ندارد" });
+        } 
         
         // get production by id parameter
         var production = _unitOfWork.ProductionRepository.GetById(id); 
@@ -71,22 +74,20 @@ public class ProductionsController : ControllerBase
         // check if production exists
         if (production == null)
         {
-            return NotFound(new { message = "production not found" });
+            return NotFound(new { message = "محصول مورد نظر یافت نشد" });
         }
         
         // check if warehouse with given id exists if not return a warehouse not found error
-        var warehouse = _unitOfWork.WarehouseRepository.GetById(productionUpdate.WarehouseId);
+        var warehouse = _unitOfWork.WarehouseRepository.GetById(productionUpdateDTO.WarehouseId);
 
         if (warehouse == null)
         {
-            return NotFound(new { message = "warehouse with given id does not exists use a valid warehouse id" });
+            return NotFound(new { message = "انبار با کد اختصاصی وارد شده وجود ندارد" });
         }
         
-        //update production
-        production.Title = productionUpdate.Title;
-        production.Code = productionUpdate.Code;
-        production.StrategicResource = productionUpdate.StrategicResource;
-        production.WarehouseId = productionUpdate.WarehouseId;
+        //update production and map DTO to it
+        production = _mapper.Map<ProductionDTO, Production>(productionUpdateDTO);
+        
         
         //track changes
         _unitOfWork.ProductionRepository.Update(production);
@@ -128,7 +129,7 @@ public class ProductionsController : ControllerBase
         {
             return BadRequest(new
             {
-                message = $"production already exists in warehouse {newProduction.WarehouseId}"
+                message = "محصول مورد نظر در انبار با کد اختصاصی وارد شده موجود است"
             });
         }
         
@@ -137,7 +138,7 @@ public class ProductionsController : ControllerBase
 
         if (warehouse == null)
         {
-            return NotFound(new { message = "warehouse with given id does not exists use a valid warehouse id" });
+            return NotFound(new { message = "انبار با کد اختصاصی وارد شده وجود ندارد" });
         }
         
         // start tracking
@@ -170,7 +171,7 @@ public class ProductionsController : ControllerBase
         // check if production exists if not return a notFound response
         if (production == null)
         {
-            return NotFound(new { message = "production not found" });
+            return NotFound(new { message = "محصول مورد نظر وجود ندارد" });
         }
         
         // start tracking 

@@ -43,6 +43,12 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
     // Track the changes we make to an entity
     public virtual void Update(TEntity entity)
     {
+        // clearing Tracker in order to avoid tracking conflicts
+        Context.ChangeTracker.Clear();
+        
+        // attaching entity to make it is being tracked 
+        Context.Set<TEntity>().Attach(entity);
+        
         Context.Entry(entity).State = EntityState.Modified;
     }
     

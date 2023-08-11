@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Data;
 using System.Net;
+using AutoMapper;
 using GolGoharSales.Data.AppContext;
 using GolGoharSales.Data.UnitOfWork;
 using GolGoharSales.Models;
@@ -14,11 +15,17 @@ namespace GolGoharSales.Controllers;
 public class LocationsController : ControllerBase
 {
     private readonly UnitOfWork _unitOfWork;
+
+    private readonly IMapper _mapper;
     
     // initializing context 
-    public LocationsController(SalesAppContext context)
+    public LocationsController(
+        SalesAppContext context,
+        IMapper mapper
+        )
     {
         _unitOfWork = new UnitOfWork(context);
+        _mapper = mapper;
     }
     
     //GET: Locations/
@@ -42,17 +49,20 @@ public class LocationsController : ControllerBase
         {
             return NotFound("location doesn't exists");
         }
+        
+        // map location to locationDTO
+        var locationDTO = _mapper.Map<Location, LocationDTO>(location);
 
-        return location;
+        return Ok(locationDTO);
     }
     
     // PUT: Locations/{id}
     // update location entity with given id
     [HttpPut("{id}")]
-    public IActionResult UpdateLocation(int id, Location locationUpdate)
+    public IActionResult UpdateLocation(int id, LocationDTO locationUpdateDTO)
     {
         // checking if id is equal to locationUpdate id
-        if (id != locationUpdate.Id)
+        if (id != locationUpdateDTO.Id)
         {
             return BadRequest(new { message = "Id in url is not equal to id in request body" });
         }
@@ -67,7 +77,7 @@ public class LocationsController : ControllerBase
         }
         
         //update location
-        location.Title = locationUpdate.Title;
+        location = _mapper.Map<LocationDTO, Location>(locationUpdateDTO);
 
         //track changes
         _unitOfWork.LocationRepository.Update(location);
@@ -99,22 +109,19 @@ public class LocationsController : ControllerBase
     //POST: locations
     // Creating a location
     [HttpPost]
-    public ActionResult<Location> CreateLocation(Location newLocation)
+    public ActionResult<Location> CreateLocation(LocationDTO newLocationDTO)
     {
+        // map DTO to location object
+        var newLocation = _mapper.Map<LocationDTO, Location>(newLocationDTO);
+        
         // do not add duplicate locations
         if (_unitOfWork.LocationRepository.LocationExists(newLocation))
         {
             return BadRequest(new { message = "location already exists" });
         }
-        
-        //create a new location
-        var location = new Location
-        {
-            Title = newLocation.Title
-        };
-        
+
         // start tracking
-        _unitOfWork.LocationRepository.Add(location);
+        _unitOfWork.LocationRepository.Add(newLocation);
         
         // handle savechanges() exceptions
         try
