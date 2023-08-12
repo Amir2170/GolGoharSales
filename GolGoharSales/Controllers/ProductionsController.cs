@@ -22,10 +22,11 @@ public class ProductionsController : ControllerBase
     
     // Initializing unitOfWork and automapper 
     public ProductionsController(
-        SalesAppContext context, IMapper mapper
+        UnitOfWork unitOfWork, 
+        IMapper mapper
         )
     {
-        _unitOfWork = new UnitOfWork(context);
+        _unitOfWork = unitOfWork;
         _mapper = mapper;
     }
     

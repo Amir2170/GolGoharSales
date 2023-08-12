@@ -18,13 +18,13 @@ public class SalesContractsController : ControllerBase
 
     private readonly IMapper _mapper;
     
-    //Initializing unitOfWork using injected context
+    //Initializing unitOfWork using DI
     public SalesContractsController(
-        SalesAppContext context,
+        UnitOfWork unitOfWork,
         IMapper mapper
         )
     {
-        _unitOfWork = new UnitOfWork(context);
+        _unitOfWork = unitOfWork;
         _mapper = mapper;
     }
     

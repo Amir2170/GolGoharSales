@@ -18,11 +18,11 @@ public class WarehousesController : ControllerBase
     
     // initializing unit of work through injected context
     public WarehousesController(
-        SalesAppContext context,
+        UnitOfWork unitOfWork,
         IMapper mapper
         )
     {
-        _unitOfWork = new UnitOfWork(context);
+        _unitOfWork = unitOfWork;
         _mapper = mapper;
     }
     

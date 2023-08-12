@@ -20,11 +20,11 @@ public class LocationsController : ControllerBase
     
     // initializing context 
     public LocationsController(
-        SalesAppContext context,
+        UnitOfWork unitOfWork,
         IMapper mapper
         )
     {
-        _unitOfWork = new UnitOfWork(context);
+        _unitOfWork = unitOfWork;
         _mapper = mapper;
     }
     

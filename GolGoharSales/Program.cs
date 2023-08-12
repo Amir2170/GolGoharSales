@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using GolGoharSales.Data;
 using GolGoharSales.Data.AppContext;
+using GolGoharSales.Data.UnitOfWork;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<SalesAppContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// adding unit of work as a scoped service
+builder.Services.AddScoped<UnitOfWork>();
 
 // adding CORS allow origin
 builder.Services.AddCors(options =>
